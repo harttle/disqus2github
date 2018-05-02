@@ -1,0 +1,5 @@
+{
+  "repo": "harttle/harttle.github.io",
+  "xmlFile": "./data.xml",
+  "token": "<YOUR GITHUB API TOKEN>"
+}
