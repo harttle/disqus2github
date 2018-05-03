@@ -25,6 +25,22 @@ function getIssueByTitle(title) {
     })
 }
 
+function getComments(page) {
+    page = page || 1
+    var url = `https://api.github.com/repos/${config.repo}/issues/comments`
+    return fetch(`${url}?page=${page}`)
+    .then(data => {
+        if (!data.length) {
+            return []
+        } 
+        else {
+            return getComments(page + 1).then(nextData => {
+                return data.concat(nextData)
+            })
+        }
+    })
+}
+
 function createIssue(post) {
     return fetch(`https://api.github.com/repos/${config.repo}/issues`, 'POST', {
         title: post.pathname,
@@ -38,7 +54,7 @@ function fetch(url, method, body) {
     const TOKEN = config.token
     return lastFetch = lastFetch
     .then(() => new Promise(resolve => {
-        setTimeout(resolve, 3000)
+        setTimeout(resolve, 2000)
     }))
     .then(() => console.log(`fetching ${url}...`))
     .then(x => rp({
@@ -53,5 +69,17 @@ function fetch(url, method, body) {
     }))
 }
 
+function updateComment(comment) {
+    var body = comment.body.replace(/\(<.*>\)/, '')
+    if (body === comment.body) {
+        return Promise.resolve();
+    }
+    return fetch(comment.url, 'PATCH', {
+        body: body
+    })
+}
+
 exports.findOrCreateIssue = findOrCreateIssue
 exports.issueComment = issueComment
+exports.getComments = getComments
+exports.updateComment = updateComment
