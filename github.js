@@ -1,9 +1,6 @@
 const rp = require('request-promise');
 const config = require('./config.json');
 
-// getIssueByTitle(title)
-// .then(issue => issue || createIssue(title))
-
 var cache = {}
 
 function issueComment(comment, issue) {
